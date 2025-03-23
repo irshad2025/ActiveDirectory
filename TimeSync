@@ -1,0 +1,57 @@
+To troubleshoot and fix issues with the Windows Time service (W32Time), follow these steps:
+
+1. **Unregister and Register the Time Service**:
+   - Open Command Prompt as an administrator and execute the following commands:
+     ```bash
+     w32tm /unregister
+     net stop w32time
+     w32tm /register
+     net start w32time
+     ```
+
+2. **Configure NTP Server**:
+   - Set the NTP server to synchronize with:
+     ```bash
+     w32tm /config /manualpeerlist:"pool.ntp.org" /syncfromflags:manual /reliable:yes /update
+     ```
+
+3. **Restart the Time Service**:
+   - Stop and start the Windows Time service again:
+     ```bash
+     net stop w32time
+     net start w32time
+     ```
+
+4. **Test Synchronization**:
+   - You can test the synchronization by running:
+     ```bash
+     w32tm /resync
+     ```
+   - Alternatively, check via Settings > Time & Language.
+
+### Update Registry Settings (if issues persist)
+
+If problems continue, adjust the Windows Time service configuration in the registry:
+
+1. Press **Win + R**, type `regedit`, and navigate to:
+   ```
+   HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\Parameters
+   ```
+
+2. **Modify Registry Entry**:
+   - Double-click on the `Type` entry and change its value from `NoSync` to `NTP`.
+
+3. **Restart Your Computer**:
+   - Restart your PC to apply changes, then retry synchronization using the command from step 4 above. 
+
+This process should help resolve issues with time synchronization on your Windows machine.
+
+Citations:
+[1] https://docs.litmus.io/litmusedge/product-features/system/network/configure-dns-ntp-servers/configure-local-ntp-server
+[2] https://learn.microsoft.com/en-us/answers/questions/1012498/windows-time-service-and-ntp-wont-start-troublesho
+[3] https://docs.oracle.com/en/database/oracle/oracle-database/19/cwwin/configuring-the-windows-time-service.html
+[4] https://www.tenforums.com/general-support/199095-timezone-synchronisation-error.html
+[5] https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/configure-authoritative-time-server
+[6] https://serverfault.com/questions/294787/how-do-i-force-sync-the-time-on-windows-workstation-or-server
+[7] https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/windows-time-service-tools-and-settings
+[8] https://superuser.com/questions/1200156/windows-time-not-synchronizing-access-is-denied-error
